@@ -5,12 +5,13 @@
     <TargetFrameworks>$(LibFx)</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
-    <RootNamespace>Bearz.Core</RootNamespace>
+    <RootNamespace>Bearz</RootNamespace>
+    <DefineConstants>$(DefineConstants);STD</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags></PackageTags>
+    <PackageTags>Bearz Core</PackageTags>
     <Description>
     Bearz.Core
     </Description>
