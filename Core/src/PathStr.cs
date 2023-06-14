@@ -33,11 +33,6 @@ public struct PathStr : IEnumerable<char>
 
     public char this[int index] => this.path[index];
 
-    public static implicit operator PathStr(string path)
-    {
-        return new PathStr(path);
-    }
-
     public static implicit operator PathStr(StringBuilder path)
     {
         return new PathStr(path);
@@ -58,12 +53,26 @@ public struct PathStr : IEnumerable<char>
         return path.path;
     }
 
-    public static PathStr New(ReadOnlySpan<char> path)
+    public static PathStr From(Uri uri)
+    {
+        return new PathStr(uri.LocalPath);
+    }
+
+    public static PathStr From(string path)
+    {
+        var span = new char[path.Length];
+        path.CopyTo(0, span, 0, path.Length);
+        cache.Add(span, path);
+
+        return new PathStr(path);
+    }
+
+    public static PathStr From(ReadOnlySpan<char> path)
     {
         return new PathStr(path);
     }
 
-    public static PathStr New(StringBuilder path)
+    public static PathStr From(StringBuilder path)
     {
         return new PathStr(path);
     }
@@ -98,6 +107,87 @@ public struct PathStr : IEnumerable<char>
             return false;
 
         return System.IO.Path.Exists(this.ToString());
+    }
+
+    public IEnumerable<PathStr> EnumerateFiles()
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateFiles(this.ToString()))
+            yield return From(path);
+    }
+
+    public IEnumerable<PathStr> EnumerateFiles(string searchPattern)
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateFiles(this.ToString(), searchPattern.ToString()))
+            yield return From(path);
+    }
+
+    public IEnumerable<PathStr> EnumerateFiles(string searchPattern, System.IO.SearchOption searchOption)
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateFiles(this.ToString(), searchPattern.ToString(), searchOption))
+            yield return From(path);
+    }
+
+    public IEnumerable<PathStr> EnumerateDirectories()
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateDirectories(this.ToString()))
+            yield return From(path);
+    }
+
+    public IEnumerable<PathStr> EnumerateDirectories(string searchPattern)
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateDirectories(this.ToString(), searchPattern.ToString()))
+            yield return From(path);
+    }
+
+    public IEnumerable<PathStr> EnumerateDirectories(string searchPattern, System.IO.SearchOption searchOption)
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateDirectories(this.ToString(), searchPattern.ToString(), searchOption))
+            yield return From(path);
+    }
+
+    public IEnumerable<PathStr> EnumerateFileSystemEntries()
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateFileSystemEntries(this.ToString()))
+            yield return From(path);
+    }
+
+    public IEnumerable<PathStr> EnumerateFileSystemEntries(string searchPattern)
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateFileSystemEntries(this.ToString(), searchPattern.ToString()))
+            yield return From(path);
+    }
+
+    public IEnumerable<PathStr> EnumerateFileSystemEntries(string searchPattern, System.IO.SearchOption searchOption)
+    {
+        if (this.Length == 0)
+            yield break;
+
+        foreach (var path in System.IO.Directory.EnumerateFileSystemEntries(this.ToString(), searchPattern.ToString(), searchOption))
+            yield return From(path);
     }
 
     public PathStr FileName()
@@ -137,8 +227,15 @@ public struct PathStr : IEnumerable<char>
     public PathStr SetExtension(ReadOnlySpan<char> extension)
     {
         var path = this.ToString();
-        var newPath = System.IO.Path.ChangeExtension(path, extension.ToString());
-        return newPath;
+        var ext = extension.ToArray();
+        if (!cache.TryGetValue(ext, out var extString))
+        {
+            extString = extension.ToString();
+            cache.Add(ext, extString);
+        }
+
+        var newPath = Path.ChangeExtension(path, extString);
+        return new PathStr(newPath);
     }
 
     public char[] ToArray()

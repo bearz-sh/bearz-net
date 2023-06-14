@@ -1,8 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-// ReSharper disable once CheckNamespace
-namespace Bearz;
-
 internal static partial class Interop
 {
     [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1310:Field names should not contain underscore")]

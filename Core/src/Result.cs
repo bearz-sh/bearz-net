@@ -26,6 +26,13 @@ public struct Result<TValue, TError>
         this.error = error;
     }
 
+    internal Result(TValue? value, TError? error)
+    {
+        this.value = value;
+        this.error = error;
+        this.hasError = error is not null;
+    }
+
     public bool IsOk => !this.hasError;
 
     public bool IsError => this.hasError;
@@ -38,7 +45,7 @@ public struct Result<TValue, TError>
     public static Result<TValue, TError> Ok(TValue value)
         => new Result<TValue, TError>(value);
 
-    public static Result<TValue, TError> Error(TError value)
+    public static Result<TValue, TError> Err(TError value)
         => new Result<TValue, TError>(value);
 
     public Result<TValue2, TError2> And<TValue2, TError2>(Result<TValue2, TError2> other)
@@ -46,7 +53,13 @@ public struct Result<TValue, TError>
         if (this.IsOk)
             return other;
 
-        return Result<TValue2, TError2>.Error(other.UnwrapError());
+        return Result<TValue2, TError2>.Err(other.UnwrapError());
+    }
+
+    public void Deconstruct(out TValue? value, out TError? error)
+    {
+        value = this.value;
+        error = this.error;
     }
 
     public bool IsOkAnd(Func<TValue, bool> predicate)
@@ -112,6 +125,17 @@ public struct Result<TValue, TError>
 
         return this.error!;
     }
+
+    public void Throw()
+    {
+        if (!this.hasError)
+            return;
+
+        if (this.error is Exception exception)
+            throw exception;
+
+        throw new InvalidOperationException(this.error!.ToString());
+    }
 }
 
 public static class Result
@@ -119,12 +143,9 @@ public static class Result
     public static Result<TValue, TError> Ok<TValue, TError>(TValue value)
         => new(value);
 
-    public static Result<TValue, None> Ok<TValue>(TValue value)
+    public static Result<TValue, ValueTuple> Ok<TValue>(TValue value)
         => new(value);
 
-    public static Result<TValue, TError> Err<TValue, TError>(TError value)
-        => new(value);
-
-    public static Result<None, TError> Err<TError>(TError value)
-        => new(value);
+    public static Result<TValue, TError> Err<TValue, TError>(TError error, TValue? value = default)
+        => new(value, error);
 }

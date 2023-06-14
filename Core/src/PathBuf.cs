@@ -34,7 +34,7 @@ public sealed class PathBuf
 
     public static implicit operator PathBuf(string path)
     {
-        return new PathBuf(path);
+        return new PathBuf(PathStr.From(path));
     }
 
     public static implicit operator PathBuf(StringBuilder path)

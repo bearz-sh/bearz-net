@@ -1,3 +1,4 @@
+<!--suppress MsbuildTargetFrameworkTagInspection -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -7,6 +8,7 @@
     <ImplicitUsings>true</ImplicitUsings>
     <RootNamespace>Bearz</RootNamespace>
     <DefineConstants>$(DefineConstants);STD</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -19,12 +21,26 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).Tests</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Util\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="$(InternalDir)/Interop/Interop.cs" Link="Interop/Interop.cs" />
+    <Compile Include="$(InternalDir)/Interop/Unix/Libraries.cs" Link="Interop/Unix/Libraries.cs" />
+    <Compile Include="$(InternalDir)/Interop/Windows/Libraries.cs" Link="Interop/Windows/Libraries.cs" />
+    <Compile Include="$(InternalDir)/Interop/Windows/Shell32/IsUserAnAdmin.cs" Link="Interop/Windows/Shell32/IsUserAnAdmin.cs" />
+    <Compile Include="$(InternalDir)/Interop/Unix/System.Native/ChMod.cs" Link="Interop/Unix/System.Native/ChMod.cs" />
+    <Compile Include="$(InternalDir)/Interop/Unix/System.Native/ChOwn.cs" Link="Interop/Unix/System.Native/ChOwn.cs" />
+    <Compile Include="$(InternalDir)/Interop/Unix/System.Native/GetEUid.cs" Link="Interop/Unix/System.Native/GetEUid.cs" />
   </ItemGroup>
 </Project>

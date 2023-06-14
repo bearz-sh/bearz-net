@@ -9,15 +9,26 @@ public struct Option<TValue> : IEquatable<Option<TValue>>
     private readonly bool isNone;
 
     public Option()
+        : this(false)
     {
-        this.value = default(TValue);
-        this.isNone = this.value == null || this.value is None || this.value is DBNull;
+    }
+
+    internal Option(bool isNone)
+    {
+        if (isNone)
+        {
+            this.isNone = true;
+            return;
+        }
+
+        this.value = default;
+        this.isNone = this.value is null or ValueTuple or DBNull;
     }
 
     internal Option(TValue value)
     {
         this.value = value;
-        this.isNone = value == null || value is None || value is DBNull;
+        this.isNone = value is null or ValueTuple or DBNull;
     }
 
     public bool IsSome => this.value is not null;
@@ -39,7 +50,7 @@ public struct Option<TValue> : IEquatable<Option<TValue>>
 
     public static Option<TValue> None()
     {
-        return new Option<TValue>();
+        return new Option<TValue>(true);
     }
 
     public bool Equals(TValue other)
@@ -69,7 +80,7 @@ public struct Option<TValue> : IEquatable<Option<TValue>>
 
         if (this.isNone)
         {
-            return obj is Option<None> || obj is None;
+            return obj is Option<ValueTuple> or ValueTuple or DBNull;
         }
 
         return false;
@@ -183,32 +194,16 @@ public struct Option<TValue> : IEquatable<Option<TValue>>
     }
 }
 
-public struct None
-{
-    public static None Default { get; } = default(None);
-
-    public override bool Equals([NotNullWhen(true)] object? obj)
-    {
-        if (obj is None)
-            return true;
-
-        return false;
-    }
-
-    public override int GetHashCode()
-        => 0;
-}
-
 public static class Option
 {
-    private static readonly Option<None> none = new Option<None>();
+    private static readonly Option<ValueTuple> none = new Option<ValueTuple>();
 
-    public static Option<None> None()
+    public static Option<ValueTuple> None()
       => none;
 
     public static Option<T> None<T>()
-      => Option<T>.None();
+        => new(true);
 
     public static Option<TValue> Some<TValue>(TValue value)
-        => Option<TValue>.Some(value);
+        => new(value);
 }

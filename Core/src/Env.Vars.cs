@@ -58,16 +58,26 @@ public static partial class Env
         return value != null;
     }
 
-    public static IEnumerator<PathStr> SplitPath()
+    public static IEnumerable<PathStr> SplitPath()
     {
         var name = IsWindows ? "Path" : "PATH";
         var path = GetVar(name) ?? string.Empty;
         foreach (var line in path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
-            yield return line;
+            yield return PathStr.From(line);
     }
 
-    public static IEnumerator<PathStr> SplitPath(string path)
+    public static IEnumerable<PathStr> SplitPath(string path)
     {
+        foreach (var line in path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
+            yield return PathStr.From(line);
+    }
+
+#pragma warning disable S4144
+    public static IEnumerable<string> SplitPathAsStrings()
+#pragma warning restore S4144
+    {
+        var name = IsWindows ? "Path" : "PATH";
+        var path = GetVar(name) ?? string.Empty;
         foreach (var line in path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
             yield return line;
     }

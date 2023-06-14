@@ -1,8 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 
-// ReSharper disable once CheckNamespace
-namespace Bearz;
-
 internal static partial class Interop
 {
     internal static partial class Libraries
