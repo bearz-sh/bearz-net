@@ -41,6 +41,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Text.Yaml", "Text.Yaml", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bearz.Text.Yaml", "Text.Yaml\src\Bearz.Text.Yaml.csproj", "{A6747D09-E681-4E90-AA27-AC4F92597B19}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".root", ".root", "{51D703C6-54A7-4212-BE3D-F8C3F8BB5299}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Directory.Packages.props = Directory.Packages.props
+		justfile = justfile
+		version.json = version.json
+		README.md = README.md
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.markdownlint.json = .markdownlint.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

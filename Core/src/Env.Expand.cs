@@ -1,5 +1,7 @@
 using System.Text;
 
+using Bearz.Extra.Strings;
+
 namespace Bearz;
 
 #if STD
@@ -23,8 +25,8 @@ static partial class Env
     public static ReadOnlySpan<char> Expand(ReadOnlySpan<char> template, EnvExpandOptions? options = null)
     {
         var o = options ?? new EnvExpandOptions();
-        Func<string, string?> getValue = o.GetVariable ?? (name => Env.GetVar(name));
-        var setValue = o.SetVariable ?? ((name, value) => Env.SetVar(name, value));
+        Func<string, string?> getValue = o.GetVariable ?? (name => Env.Get(name));
+        var setValue = o.SetVariable ?? ((name, value) => Env.Set(name, value));
         var tokenBuilder = new StringBuilder();
         var output = new StringBuilder();
         var kind = TokenKind.None;

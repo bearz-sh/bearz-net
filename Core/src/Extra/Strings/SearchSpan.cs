@@ -4,7 +4,12 @@ namespace Bearz.Extra.Strings;
 /// Struct <see cref="SearchSpan"/> represents the location of a span of text
 /// within a larger body of text.
 /// </summary>
-public readonly struct SearchSpan
+#if STD
+public
+#else
+internal
+#endif
+readonly struct SearchSpan
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchSpan"/> struct.

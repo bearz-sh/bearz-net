@@ -49,8 +49,8 @@
     <SourceGeneratorFx>netstandard2.0</SourceGeneratorFx>
     <SourceGeneratorTestFx>netstandard2.0</SourceGeneratorTestFx>
 
-    <LibFx>$(CoreFx)</LibFx>
-    <LibTestFx>$(CoreFx)</LibTestFx>
+    <LibFx>netstandard2.0;net6.0;net7.0</LibFx>
+    <LibTestFx>net472;net7.0</LibTestFx>
     
     <!-- for cases when netstandard2.0 is not supported, but functionality is supported in net472 or greater -->
     <NetCoreLibFx>$(NetFx);net6.0;$(CoreFx)</NetCoreLibFx>

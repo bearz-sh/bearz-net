@@ -2,7 +2,12 @@ using System.Text;
 
 namespace Bearz.Extra.Strings;
 
-public static partial class StringExtensions
+#if STD
+public
+#else
+internal
+#endif
+static partial class StringExtensions
 {
     /// <summary>
     /// Searches the string for all occurrences of the specified value using the

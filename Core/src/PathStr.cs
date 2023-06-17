@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+#if !NETLEGACY
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -106,7 +105,12 @@ public struct PathStr : IEnumerable<char>
         if (this.Length == 0)
             return false;
 
+#if NET7_0_OR_GREATER
         return System.IO.Path.Exists(this.ToString());
+#else
+        return System.IO.File.Exists(this.ToString()) ||
+               System.IO.Directory.Exists(this.ToString());
+#endif
     }
 
     public IEnumerable<PathStr> EnumerateFiles()
@@ -258,3 +262,4 @@ public struct PathStr : IEnumerable<char>
         return str;
     }
 }
+#endif

@@ -4,6 +4,36 @@ namespace Bearz;
 
 public static class TextWriterExtensions
 {
+#if NETLEGACY
+    public static void Write(this TextWriter writer, ReadOnlySpan<char> chars)
+    {
+        var buffer = Arrays.Rent<char>(chars.Length);
+        try
+        {
+            chars.CopyTo(buffer);
+            writer.Write(buffer, 0, buffer.Length);
+        }
+        finally
+        {
+            Arrays.Return(buffer, true);
+        }
+    }
+
+    public static Task WriteAsync(this TextWriter writer, ReadOnlyMemory<char> chars, CancellationToken cancellationToken = default)
+    {
+        var buffer = Arrays.Rent<char>(chars.Length);
+        try
+        {
+            chars.Span.CopyTo(buffer);
+            return writer.WriteAsync(buffer, 0, buffer.Length);
+        }
+        finally
+        {
+            Arrays.Return(buffer, true);
+        }
+    }
+#endif
+
     public static void PipeFrom(this TextWriter writer, TextReader reader, bool dispose = false, int bufferSize = -1)
     {
         if (writer is null)

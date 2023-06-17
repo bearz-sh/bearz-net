@@ -5,6 +5,43 @@ namespace Bearz;
 
 public static class TextReaderExtensions
 {
+#if NETLEGACY
+    public static int Read(this TextReader reader, Span<char> chars)
+    {
+        var buffer = Arrays.Rent<char>(chars.Length);
+        try
+        {
+            var read = reader.Read(buffer, 0, buffer.Length);
+            if (read > 0)
+                buffer.AsSpan(0, read).CopyTo(chars);
+
+            return read;
+        }
+        finally
+        {
+            Arrays.Return(buffer, true);
+        }
+    }
+
+    public static Task<int> ReadAsync(this TextReader reader, Memory<char> chars, CancellationToken cancellationToken = default)
+    {
+        var buffer = Arrays.Rent<char>(chars.Length);
+        try
+        {
+            var read = reader.Read(buffer, 0, buffer.Length);
+            if (read > 0)
+                buffer.AsSpan(0, read).CopyTo(chars.Span);
+
+            return Task.FromResult(read);
+        }
+        finally
+        {
+            Arrays.Return(buffer, true);
+        }
+    }
+
+#endif
+
     public static void PipeTo(
         this TextReader reader,
         TextWriter writer,
@@ -237,7 +274,11 @@ public static class TextReaderExtensions
         bool leaveOpen = false,
         CancellationToken cancellationToken = default)
     {
+#if NETLEGACY
+        using var sw = new StreamWriter(stream, encoding ?? Encoding.UTF8, bufferSize, leaveOpen);
+#else
         await using var sw = new StreamWriter(stream, encoding, bufferSize, leaveOpen);
+#endif
         await reader.PipeToAsync(sw, dispose, bufferSize, cancellationToken);
     }
 
@@ -249,7 +290,11 @@ public static class TextReaderExtensions
         int bufferSize,
         CancellationToken cancellationToken)
     {
+#if NETLEGACY
+        using var stream = file.Open(FileMode.Create, FileAccess.Write, FileShare.Read);
+#else
         await using var stream = file.Open(FileMode.Create, FileAccess.Write, FileShare.Read);
+#endif
         await reader.PipeToAsync(stream, dispose, encoding, bufferSize, false, cancellationToken);
     }
 
@@ -261,10 +306,17 @@ public static class TextReaderExtensions
     {
         try
         {
+#if !NET7_0_OR_GREATER
+            while (await reader.ReadLineAsync().ConfigureAwait(false) is { } line)
+            {
+                lines.Add(line);
+            }
+#else
             while (await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { } line)
             {
                 lines.Add(line);
             }
+#endif
         }
         catch (Exception ex)
         {

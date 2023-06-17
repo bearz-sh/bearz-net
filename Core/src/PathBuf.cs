@@ -1,4 +1,7 @@
+#if !NETLEGACY
 using System.Text;
+
+using Bearz.Text;
 
 namespace Bearz;
 
@@ -153,3 +156,4 @@ public sealed class PathBuf
         return this.buffer.ToString();
     }
 }
+#endif

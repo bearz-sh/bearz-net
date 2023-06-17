@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -5,7 +6,7 @@
     <TargetFrameworks>$(LibFx)</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
-    <RootNamespace>Bearz.Text.DotEnv</RootNamespace>
+    <RootNamespace>Bearz</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,12 +19,32 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).Tests</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\src\Bearz.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(NetLegacy) == 'true'">
+    <PackageReference Include="Nullable"  PrivateAssets="all" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="$(InternalDir)/Index.cs" Link="Index.cs" />
+    <Compile Include="$(InternalDir)/Range.cs" Link="Range.cs" />
+   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentBuilder">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

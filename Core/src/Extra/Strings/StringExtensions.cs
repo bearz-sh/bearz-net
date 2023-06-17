@@ -8,7 +8,12 @@ namespace Bearz.Extra.Strings;
 /// polyfills older target frameworks with newer methods, provides case insensitive comparisons,
 /// and extended search and replace for strings.
 /// </summary>
-public static partial class StringExtensions
+#if STD
+public
+#else
+internal
+#endif
+static partial class StringExtensions
 {
 #if NETLEGACY
     /// <summary>
@@ -35,6 +40,18 @@ public static partial class StringExtensions
     public static string[] Split(this string source, string separator)
     {
         return source.Split(separator.ToCharArray());
+    }
+
+    /// <summary>
+    /// Splits a <see cref="string"/> into substrings using the separator.
+    /// </summary>
+    /// <param name="source">The string instance to split.</param>
+    /// <param name="separator">The separator that is used to split the string.</param>
+    /// <param name="options">The string split options.</param>
+    /// <returns>The <see cref="T:string[]"/>.</returns>
+    public static string[] Split(this string source, char separator, StringSplitOptions options)
+    {
+        return source.Split(new[] { separator }, options);
     }
 
     /// <summary>
@@ -147,21 +164,6 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Indicates whether this string is equal to the given value using
-    /// the <see cref="StringComparison.OrdinalIgnoreCase"/> comparison.
-    /// </summary>
-    /// <param name="source">The source string.</param>
-    /// <param name="value">The value to test for equality.</param>
-    /// <returns><see langword="true" /> when the string equals the value; otherwise, <see langword="false" />.</returns>
-    public static bool EqualsIgnoreCase(this string? source, string? value)
-    {
-        if (ReferenceEquals(source, value))
-            return true;
-
-        return source?.Equals(value, StringComparison.OrdinalIgnoreCase) == true;
-    }
-
-    /// <summary>
     /// Indicates whether this span is equal to the given value using
     /// the <see cref="StringComparison.OrdinalIgnoreCase"/> comparison.
     /// </summary>
@@ -211,24 +213,6 @@ public static partial class StringExtensions
 
         return source?.Equals(right, comparison) == false;
     }
-
-    /// <summary>
-    /// Indicates whether or not the <see cref="string"/> value is null, empty, or white space.
-    /// </summary>
-    /// <param name="source">The source string.</param>
-    /// <returns><see langword="true" /> if the <see cref="string"/>
-    /// is null, empty, or white space; otherwise, <see langword="false" />.
-    /// </returns>
-    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? source)
-        => string.IsNullOrWhiteSpace(source);
-
-    /// <summary>
-    /// Indicates whether or not the <see cref="string"/> value is null or empty.
-    /// </summary>
-    /// <param name="source">The <see cref="string"/> value.</param>
-    /// <returns><see langword="true" /> if the <see cref="string"/> is null or empty; otherwise, <see langword="false" />.</returns>
-    public static bool IsNullOrEmpty([NotNullWhen(false)] this string? source)
-        => string.IsNullOrEmpty(source);
 
     internal static bool IsHexString(this string value)
     {

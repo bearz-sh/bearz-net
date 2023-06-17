@@ -32,7 +32,7 @@ public partial class Ps
             return location;
 
 #if NETLEGACY
-        if (FsPath.IsPathRooted(command) && File.Exists(command))
+        if (Path.IsPathRooted(command) && File.Exists(command))
         {
             ExecutableLocationCache[command] = command;
             ExecutableLocationCache[rootName] = command;
@@ -53,7 +53,7 @@ public partial class Ps
         if (prependPaths is not null)
             pathSegments.AddRange(prependPaths);
 
-        pathSegments.AddRange(Env.SplitPathAsStrings());
+        pathSegments.AddRange(Env.SplitPath());
 
         for (var i = 0; i < pathSegments.Count; i++)
         {
@@ -68,7 +68,7 @@ public partial class Ps
             IEnumerable<string> matches = Array.Empty<string>();
             if (Env.IsWindows)
             {
-                var pathExt = Env.GetVar("PATHEXT");
+                var pathExt = Env.Get("PATHEXT");
                 if (pathExt.IsNullOrWhiteSpace())
                 {
                     // XP's system default value for PATHEXT system variable

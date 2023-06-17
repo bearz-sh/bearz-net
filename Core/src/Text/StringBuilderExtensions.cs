@@ -221,15 +221,41 @@ public static class StringBuilderExtensions
             .Append(quote);
     }
 
-    public static void CopyTo(this StringBuilder builder, Span<char> span)
+#if NETLEGACY
+    public static void CopyTo(this StringBuilder builder, int sourceIndex, Span<char> span, int count)
     {
-        var set = new char[builder.Length];
+        if (sourceIndex + count > builder.Length)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(count),
+                "Count must be less than or equal to the length of the string builder.");
+        }
+
+        if (count > span.Length)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(count),
+                "Count must be less than or equal to the length of the span.");
+        }
+
+        var set = new char[count];
         builder.CopyTo(
-            0,
+            sourceIndex,
             set,
             0,
-            span.Length);
+            count);
         set.CopyTo(span);
+    }
+#endif
+
+    public static void CopyTo(this StringBuilder builder, Span<char> span, int count)
+    {
+        builder.CopyTo(0, span, count);
+    }
+
+    public static void CopyTo(this StringBuilder builder, Span<char> span)
+    {
+        builder.CopyTo(0, span, span.Length);
     }
 
     public static int IndexOf(

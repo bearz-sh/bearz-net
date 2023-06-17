@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 
+using Bearz.Extra.Process;
 using Bearz.Extra.Strings;
 
 using PsExit = Bearz.Result<int, System.Exception>;
@@ -59,10 +60,14 @@ public sealed class PsChild : IDisposable
             }
         }
 
+#if NET5_0_OR_GREATER
         foreach (var arg in startInfo.Args)
         {
             si.ArgumentList.Add(arg);
         }
+#else
+        si.Arguments = startInfo.Args.ToString();
+#endif
 
         if (!startInfo.Cwd.IsNullOrWhiteSpace())
             si.WorkingDirectory = startInfo.Cwd;
@@ -317,7 +322,11 @@ public sealed class PsChild : IDisposable
         if (child.IsInRedirected)
             throw new InvalidOperationException("Cannot pipe to child's input when child input is not redirected.");
 
+#if NETLEGACY
+        return this.process.StandardOutput.BaseStream.CopyToAsync(child.process.StandardInput.BaseStream);
+#else
         return this.process.StandardOutput.BaseStream.CopyToAsync(child.process.StandardInput.BaseStream, cancellationToken);
+#endif
     }
 
     public void PipeErrorTo(Stream stream)

@@ -25,9 +25,12 @@ internal static partial class Interop
 #else
     [DllImport(Libraries.Kernel32, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static partial bool SetConsoleCtrlHandler(ConsoleCtrlHandlerRoutine handler, [MarshalAs(UnmanagedType.Bool)] bool addOrRemove);
+    internal static extern bool SetConsoleCtrlHandler(ConsoleCtrlHandlerRoutine handler, [MarshalAs(UnmanagedType.Bool)] bool addOrRemove);
 
+#if NET5_0_OR_GREATER
     [DllImport(Libraries.Kernel32)]
-    internal static extern unsafe bool SetConsoleCtrlHandler(delegate* unmanaged<int, BOOL> handlerRoutin e, bool add);
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern unsafe bool SetConsoleCtrlHandler(delegate* unmanaged<int, BOOL> handlerRoutine, bool add);
+#endif
 #endif
 }

@@ -9,9 +9,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-  
-  <ItemGroup>
+
+  <ItemGroup Condition="$(NetLegacy) == 'true'">
     <PackageReference Include="System.Memory" />
+    <PackageReference Include="Nullable"  PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" />
   </ItemGroup>
 
 </Project>

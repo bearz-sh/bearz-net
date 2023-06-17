@@ -1,16 +1,42 @@
 using System;
+using System.Diagnostics;
+using System.Runtime.Versioning;
 
 namespace Bearz;
 
 public static partial class Env
 {
-    private static readonly Lazy<string[]> argv = new Lazy<string[]>(() => Environment.GetCommandLineArgs());
+    private static readonly Lazy<string[]> argv = new Lazy<string[]>(Environment.GetCommandLineArgs);
+
+    private static readonly Lazy<Process> process = new Lazy<Process>(Process.GetCurrentProcess);
+
+    private static readonly Lazy<int> getProcessId = new(() =>
+    {
+#if NETLEGACY
+        return process.Value.Id;
+#else
+        return Environment.ProcessId;
+#endif
+    });
 
     public static bool Is64BitProcess => Environment.Is64BitProcess;
 
-    public static string? ProcessPath => Environment.ProcessPath;
+    [UnsupportedOSPlatform("browser")]
+    public static string? ProcessPath => Argv.FirstOrDefault();
 
-    public static int ProcessId => Environment.ProcessId;
+    [UnsupportedOSPlatform("browser")]
+    public static int ProcessId
+    {
+        get
+        {
+            #if !NETLEGACY
+            if (OperatingSystem.IsBrowser())
+                throw new PlatformNotSupportedException("Browser does not support ProcessId.");
+            #endif
+
+            return getProcessId.Value;
+        }
+    }
 
     public static IReadOnlyList<string> Argv => argv.Value;
 

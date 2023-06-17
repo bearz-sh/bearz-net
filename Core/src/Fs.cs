@@ -1,33 +1,60 @@
 using System.Collections;
+using System.Diagnostics.Contracts;
+using System.Runtime.CompilerServices;
 using System.Text;
+
+using Bearz.Text;
 
 using Microsoft.Win32.SafeHandles;
 
 namespace Bearz;
 
-public static class Fs
+public static partial class Fs
 {
-    public static void CopyDirectory(PathStr sourceDir, PathStr destinationDir, bool recursive, bool force = false)
+    public static string CatFiles(params string[] files)
     {
-        if (!sourceDir.Exists())
-            throw new DirectoryNotFoundException($"Source directory not found: {sourceDir}");
+        return CatFiles((IEnumerable<string>)files);
+    }
+
+    public static string CatFiles(IEnumerable<string> files, bool throwIfNotFound = false)
+    {
+        var sb = StringBuilderCache.Acquire();
+        foreach (var file in files)
+        {
+            if (throwIfNotFound && !File.Exists(file))
+                throw new FileNotFoundException($"File not found: {file}");
+
+            if (sb.Length > 0)
+                sb.Append(Environment.NewLine);
+
+            sb.Append(ReadTextFile(file));
+        }
+
+        return StringBuilderCache.GetStringAndRelease(sb);
+    }
+
+    public static void CopyDirectory(string sourceDir, string destinationDir, bool recursive, bool force = false)
+    {
+        var dir = new DirectoryInfo(sourceDir);
+
+        if (!dir.Exists)
+            throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
 
         if (!DirectoryExists(destinationDir))
             Directory.CreateDirectory(destinationDir);
 
-        foreach (var file in EnumerateFiles(sourceDir))
+        foreach (FileInfo file in dir.GetFiles())
         {
-            var buf = new PathBuf(destinationDir);
-            var target = buf.Join(file.FileName()).ToPathStr();
-            if (target.Exists())
+            string targetFilePath = Path.Combine(destinationDir, file.Name);
+            if (FileExists(targetFilePath))
             {
                 if (force)
-                    Fs.RemoveDirectory(target);
+                    File.Delete(targetFilePath);
                 else
-                    throw new IOException($"File already exists: {target}");
+                    throw new IOException($"File already exists: {targetFilePath}");
             }
 
-            CopyFile(file, target);
+            file.CopyTo(targetFilePath);
         }
 
         if (!recursive)
@@ -35,38 +62,34 @@ public static class Fs
             return;
         }
 
-        foreach (var dir in sourceDir.EnumerateDirectories())
+        DirectoryInfo[] dirs = dir.GetDirectories();
+        foreach (DirectoryInfo subDir in dirs)
         {
-            var dest = PathBuf.New(dir).Join(dir.FileName()).ToPathStr();
-            CopyDirectory(dir, dest, recursive, force);
+            string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+            CopyDirectory(subDir.FullName, newDestinationDir, true, force);
         }
     }
 
-    public static void CopyFile(PathStr source, PathStr destination)
-    {
-        File.Copy(source, destination);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyFile(string source, string destination)
+        => File.Copy(source, destination);
 
-    public static void CopyFile(PathStr source, PathStr destination, bool overwrite)
-    {
-        File.Copy(source, destination, overwrite);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void CopyFile(string source, string destination, bool overwrite)
+        => File.Copy(source, destination, overwrite);
 
-    public static void Chmod(PathStr path, UnixFileMode mode)
-    {
-        File.SetUnixFileMode(path, mode);
-    }
-
-    public static FileStream CreateFile(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static FileStream CreateFile(string path)
         => File.Create(path);
 
-    public static FileStream CreateFile(PathStr path, int bufferSize)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static FileStream CreateFile(string path, int bufferSize)
         => File.Create(path, bufferSize);
 
-    public static FileStream CreateFile(PathStr path, int bufferSize, FileOptions options)
+    public static FileStream CreateFile(string path, int bufferSize, FileOptions options)
         => File.Create(path, bufferSize, options);
 
-    public static StreamWriter CreateTextFile(PathStr path, bool append = false)
+    public static StreamWriter CreateTextFile(string path, bool append = false)
     {
         if (append)
             return File.AppendText(path);
@@ -74,165 +97,121 @@ public static class Fs
         return File.CreateText(path);
     }
 
-    public static IEnumerable<string> EnumerateTextFile(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateTextFile(string path)
     {
         return File.ReadLines(path);
     }
 
-    public static IAsyncEnumerable<string> EnumerateTextFileAsync(PathStr path, CancellationToken cancellationToken = default)
-    {
-        return File.ReadLinesAsync(path, cancellationToken);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateFiles(string path)
+        => Directory.EnumerateFiles(path);
 
-    public static IEnumerable<PathStr> EnumerateFiles(PathStr path)
-    {
-        foreach (var item in Directory.EnumerateFiles(path))
-        {
-            yield return PathStr.From(item);
-        }
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateFiles(string path, string searchPattern)
+        => Directory.EnumerateFiles(path, searchPattern);
 
-    public static IEnumerable<PathStr> EnumerateFiles(PathStr path, string searchPattern)
-    {
-        foreach (var item in Directory.EnumerateFiles(path, searchPattern))
-        {
-            yield return PathStr.From(item);
-        }
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOption)
+        => Directory.EnumerateFiles(path, searchPattern, searchOption);
 
-    public static IEnumerable<PathStr> EnumerateFiles(PathStr path, string searchPattern, SearchOption searchOption)
-    {
-        foreach (var item in Directory.EnumerateFiles(path, searchPattern, searchOption))
-        {
-            yield return PathStr.From(item);
-        }
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateDirectories(string path)
+        => Directory.EnumerateDirectories(path);
 
-    public static IEnumerable<PathStr> EnumerateDirectories(PathStr path)
-    {
-        foreach (var item in Directory.EnumerateDirectories(path))
-        {
-            yield return PathStr.From(item);
-        }
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateDirectories(string path, string searchPattern)
+        => Directory.EnumerateDirectories(path, searchPattern);
 
-    public static IEnumerable<PathStr> EnumerateDirectories(PathStr path, string searchPattern)
-    {
-        foreach (var item in Directory.EnumerateDirectories(path, searchPattern))
-        {
-            yield return PathStr.From(item);
-        }
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateDirectories(string path, string searchPattern, SearchOption searchOption)
+        => Directory.EnumerateDirectories(path, searchPattern, searchOption);
 
-    public static IEnumerable<PathStr> EnumerateDirectories(PathStr path, string searchPattern, SearchOption searchOption)
-    {
-        foreach (var item in Directory.EnumerateDirectories(path, searchPattern, searchOption))
-        {
-            yield return PathStr.From(item);
-        }
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateFileSystemEntries(string path)
+        => Directory.EnumerateFileSystemEntries(path);
 
-    public static IEnumerable<PathStr> EnumerateFileSystemEntries(PathStr path)
-    {
-        foreach (var item in Directory.EnumerateFileSystemEntries(path))
-        {
-            yield return PathStr.From(item);
-        }
-    }
-
-    public static void EnsureDirectory(PathStr path)
+    public static void EnsureDirectory(string path)
     {
         if (!DirectoryExists(path))
             Directory.CreateDirectory(path);
     }
 
-    public static void EnsureDirectory(PathStr path, UnixFileMode mode)
-    {
-        if (!DirectoryExists(path))
-            Directory.CreateDirectory(path, mode);
-    }
-
-    public static void EnsureFile(PathStr path)
+    public static void EnsureFile(string path)
     {
         if (!FileExists(path))
             File.WriteAllBytes(path, Array.Empty<byte>());
     }
 
-    public static bool DirectoryExists(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool DirectoryExists(string path)
         => Directory.Exists(path);
 
-    public static bool FileExists(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool FileExists(string path)
         => File.Exists(path);
 
-    public static bool IsDirectory(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsDirectory(string path)
         => File.GetAttributes(path).HasFlag(FileAttributes.Directory);
 
-    public static bool IsFile(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsFile(string path)
         => !IsDirectory(path);
 
-    public static void LinkDirectory(PathStr path, PathStr pathToTarget)
-        => Directory.CreateSymbolicLink(path, pathToTarget);
-
-    public static void LinkFile(PathStr path, PathStr pathToTarget)
-        => File.CreateSymbolicLink(path, pathToTarget);
-
-    public static void MakeDirectory(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void MakeDirectory(string path)
         => Directory.CreateDirectory(path);
 
-    public static void MakeDirectory(PathStr path, UnixFileMode mode)
-        => Directory.CreateDirectory(path, mode);
-
-    public static void MoveDirectory(PathStr source, PathStr destination)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void MoveDirectory(string source, string destination)
         => Directory.Move(source, destination);
 
-    public static void MoveFile(PathStr source, PathStr destination)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void MoveFile(string source, string destination)
         => File.Move(source, destination);
 
-    public static FileStream OpenFile(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static FileStream OpenFile(string path)
         => File.OpenRead(path);
 
-    public static FileStream OpenFile(PathStr path, FileMode mode)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static FileStream OpenFile(string path, FileMode mode)
         => File.Open(path, mode);
 
-    public static FileStream OpenFile(PathStr path, FileMode mode, FileAccess access)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static FileStream OpenFile(string path, FileMode mode, FileAccess access)
         => File.Open(path, mode, access);
 
-    public static FileStream OpenFile(PathStr path, FileMode mode, FileAccess access, FileShare share)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static FileStream OpenFile(string path, FileMode mode, FileAccess access, FileShare share)
         => File.Open(path, mode, access, share);
 
-    public static FileStream OpenFileWriteStream(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static FileStream OpenFileWriteStream(string path)
         => File.OpenWrite(path);
 
-    public static SafeFileHandle OpenFileHandle(PathStr path)
-        => File.OpenHandle(path);
-
-    public static void RemoveFile(PathStr path)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void RemoveFile(string path)
         => File.Delete(path);
 
-    public static void RemoveDirectory(PathStr path, bool recursive = false)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void RemoveDirectory(string path, bool recursive = false)
         => Directory.Delete(path, recursive);
 
-    public static byte[] ReadFile(PathStr path)
-    {
-        return File.ReadAllBytes(path);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static byte[] ReadFile(string path)
+        => File.ReadAllBytes(path);
 
-    public static string ReadTextFile(PathStr path)
-    {
-        return File.ReadAllText(path);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ReadTextFile(string path)
+        => File.ReadAllText(path);
 
-    public static void WriteFile(PathStr path, byte[] data)
-    {
-        File.WriteAllBytes(path, data);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void WriteFile(string path, byte[] data)
+        => File.WriteAllBytes(path, data);
 
-    public static Task WriteFileAsync(PathStr path, byte[] data, CancellationToken cancellationToken = default)
-    {
-        return File.WriteAllBytesAsync(path, data, cancellationToken);
-    }
-
-    public static void WriteTextFile(PathStr path, string contents, Encoding? encoding = null, bool append = false)
+    public static void WriteTextFile(string path, string contents, Encoding? encoding = null, bool append = false)
     {
         if (append)
         {
@@ -256,7 +235,7 @@ public static class Fs
     }
 
     public static void WriteTextFile(
-        PathStr path,
+        string path,
         IEnumerable<string> contents,
         Encoding? encoding = null,
         bool append = false)
@@ -280,45 +259,5 @@ public static class Fs
         }
 
         File.WriteAllLines(path, contents);
-    }
-
-    public static Task WriteTextFileAsync(PathStr path, string contents, Encoding? encoding = null, bool append = false, CancellationToken cancellationToken = default)
-    {
-        if (append)
-        {
-            if (encoding is not null)
-            {
-                return File.AppendAllTextAsync(path, contents, encoding, cancellationToken);
-            }
-
-            return File.AppendAllTextAsync(path, contents, cancellationToken);
-        }
-
-        if (encoding is not null)
-        {
-            return File.WriteAllTextAsync(path, contents, encoding, cancellationToken);
-        }
-
-        return File.WriteAllTextAsync(path, contents, cancellationToken);
-    }
-
-    public static Task WriteTextFileAsync(PathStr path, IEnumerable<string> contents, Encoding? encoding = null, bool append = false, CancellationToken cancellationToken = default)
-    {
-        if (append)
-        {
-            if (encoding is not null)
-            {
-                return File.AppendAllLinesAsync(path, contents, encoding, cancellationToken);
-            }
-
-            return File.AppendAllLinesAsync(path, contents, cancellationToken);
-        }
-
-        if (encoding is not null)
-        {
-            return File.WriteAllLinesAsync(path, contents, encoding, cancellationToken);
-        }
-
-        return File.WriteAllLinesAsync(path, contents, cancellationToken);
     }
 }

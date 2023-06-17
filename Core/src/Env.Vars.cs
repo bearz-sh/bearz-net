@@ -2,23 +2,25 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
+using Bearz.Extra.Strings;
+
 namespace Bearz;
 
 public static partial class Env
 {
     public static EnvVars Vars { get; } = new EnvVars();
 
-    public static string? GetVar(string name)
+    public static string? Get(string name)
     {
         return Environment.GetEnvironmentVariable(name);
     }
 
-    public static string? GetVar(string name, EnvironmentVariableTarget target)
+    public static string? Get(string name, EnvironmentVariableTarget target)
     {
         return Environment.GetEnvironmentVariable(name, target);
     }
 
-    public static string GetRequiredVar(string name)
+    public static string GetRequired(string name)
     {
         var value = Environment.GetEnvironmentVariable(name);
         if (value == null)
@@ -27,7 +29,7 @@ public static partial class Env
         return value;
     }
 
-    public static bool HasVar(string name)
+    public static bool Has(string name)
     {
         return Environment.GetEnvironmentVariable(name) != null;
     }
@@ -42,12 +44,12 @@ public static partial class Env
         Environment.SetEnvironmentVariable(name, null, target);
     }
 
-    public static void SetVar(string name, string value)
+    public static void Set(string name, string value)
     {
         Environment.SetEnvironmentVariable(name, value);
     }
 
-    public static void SetVar(string name, string value, EnvironmentVariableTarget target)
+    public static void Set(string name, string value, EnvironmentVariableTarget target)
     {
         Environment.SetEnvironmentVariable(name, value, target);
     }
@@ -58,31 +60,17 @@ public static partial class Env
         return value != null;
     }
 
-    public static IEnumerable<PathStr> SplitPath()
+    public static IEnumerable<string> SplitPath()
     {
         var name = IsWindows ? "Path" : "PATH";
-        var path = GetVar(name) ?? string.Empty;
-        foreach (var line in path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
-            yield return PathStr.From(line);
+        var path = Get(name) ?? string.Empty;
+        return path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
     }
 
-    public static IEnumerable<PathStr> SplitPath(string path)
-    {
-        foreach (var line in path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
-            yield return PathStr.From(line);
-    }
+    public static IEnumerable<string> SplitPath(string path)
+        => path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-#pragma warning disable S4144
-    public static IEnumerable<string> SplitPathAsStrings()
-#pragma warning restore S4144
-    {
-        var name = IsWindows ? "Path" : "PATH";
-        var path = GetVar(name) ?? string.Empty;
-        foreach (var line in path.Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
-            yield return line;
-    }
-
-    public static string JoinPath(IEnumerable<PathStr> paths)
+    public static string JoinPath(IEnumerable<string> paths)
     {
         var sb = new StringBuilder();
         foreach (var path in paths)
@@ -100,8 +88,8 @@ public static partial class Env
     {
         public string? this[string name]
         {
-            get => Env.GetVar(name);
-            set => Env.SetVar(name, value ?? string.Empty);
+            get => Env.Get(name);
+            set => Env.Set(name, value ?? string.Empty);
         }
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
