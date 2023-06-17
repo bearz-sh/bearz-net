@@ -1,3 +1,4 @@
+<!--suppress MsbuildTargetFrameworkTagInspection -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -6,20 +7,33 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
     <RootNamespace>Bearz.Security.Cryptography</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags></PackageTags>
+    <PackageTags>Bearz Cryptography Aes PBKDF2 ChaCha20 AesGcm Encryption</PackageTags>
     <Description>
-    Bearz.Security.Cryptography
+    A cryptography library for BearzFx to help with encryption for automation
+purposes.
     </Description>
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="LICENSE.md" Pack="true" PackagePath="\" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(NetLegacy)' == 'true'">
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="Nullable" PrivateAssets="all" />
+  </ItemGroup>
+    
+  <ItemGroup Condition="'$(NetLegacy)' == 'true'">
+    <Compile Include="$(InternalDir)/Numerics/BitOperations.cs" Link="BitOperations.cs" />
+    <Compile Include="$(InternalDir)/StreamExtensions.cs" Link="StreamExtensions.cs" />
+  </ItemGroup>  
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
