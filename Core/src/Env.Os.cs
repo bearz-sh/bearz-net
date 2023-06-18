@@ -1,6 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
 
+#if NETLEGACY
+using Bearz.Extra.Strings;
+#endif
+
 namespace Bearz;
 
 public static partial class Env
@@ -13,6 +17,22 @@ public static partial class Env
         }
 
         return Interop.Sys.GetEUid() == 0;
+    });
+
+    private static readonly Lazy<bool> isWsl = new(() =>
+    {
+        if (!IsLinux)
+            return false;
+
+        try
+        {
+            var version = File.ReadAllText("/proc/version");
+            return version.Contains("Microsoft", StringComparison.OrdinalIgnoreCase);
+        }
+        catch (IOException)
+        {
+            return false;
+        }
     });
 
     private static readonly Lazy<bool> isWindows = new Lazy<bool>(() =>
@@ -85,6 +105,8 @@ public static partial class Env
     public static bool IsLinux => isLinux.Value;
 
     public static bool IsMacOS => isMacOS.Value;
+
+    public static bool IsWsl => isWsl.Value;
 
     public static bool Is64BitOs => Environment.Is64BitOperatingSystem;
 

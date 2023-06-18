@@ -34,12 +34,12 @@ public static partial class Env
         return Environment.GetEnvironmentVariable(name) != null;
     }
 
-    public static void RemoveVar(string name)
+    public static void Remove(string name)
     {
         Environment.SetEnvironmentVariable(name, null);
     }
 
-    public static void RemoveVar(string name, EnvironmentVariableTarget target)
+    public static void Remove(string name, EnvironmentVariableTarget target)
     {
         Environment.SetEnvironmentVariable(name, null, target);
     }
@@ -86,6 +86,8 @@ public static partial class Env
 
     public sealed class EnvVars : IEnumerable<KeyValuePair<string, string>>
     {
+        public KeyCollection Keys => new KeyCollection(System.Environment.GetEnvironmentVariables());
+
         public string? this[string name]
         {
             get => Env.Get(name);
@@ -106,6 +108,57 @@ public static partial class Env
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        public class KeyCollection : ICollection<string>
+        {
+            private readonly IDictionary dictionary;
+
+            public KeyCollection(IDictionary dictionary)
+            {
+                this.dictionary = dictionary;
+            }
+
+            public int Count => this.dictionary.Count;
+
+            public bool IsReadOnly => true;
+
+            public IEnumerator<string> GetEnumerator()
+            {
+                foreach (var key in this.dictionary.Keys)
+                {
+                    if (key is string name)
+                        yield return name;
+                }
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+                => this.GetEnumerator();
+
+            public void Add(string item)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Clear()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool Contains(string item)
+                => this.dictionary.Contains(item);
+
+            public void CopyTo(string[] array, int arrayIndex)
+            {
+                throw new NotImplementedException();
+            }
+
+            // ReSharper disable once MemberHidesStaticFromOuterClass
+#pragma warning disable S3218
+            public bool Remove(string item)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
