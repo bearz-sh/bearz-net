@@ -3,7 +3,7 @@ namespace System.Diagnostics.CodeAnalysis;
 
 [Flags]
 [SuppressMessage("Major Code Smell", "S4070:Non-flags enums should not be marked with \"FlagsAttribute\"")]
-public enum DynamicallyAccessedMemberTypes
+internal enum DynamicallyAccessedMemberTypes
 {
     /// <summary>Specifies no members.</summary>
     None = 0,

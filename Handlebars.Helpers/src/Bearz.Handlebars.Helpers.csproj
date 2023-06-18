@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -6,47 +5,53 @@
     <TargetFrameworks>$(LibFx)</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
-    <RootNamespace>Bearz</RootNamespace>
+    <RootNamespace>Bearz.Handlebars.Helpers</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags></PackageTags>
+    <PackageTags>Handlebarz Helpers</PackageTags>
     <Description>
-    Bearz.Text.DotEnv
+    Bearz.Handlebars.Helpers
     </Description>
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="LICENSE.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).Tests</_Parameter1>
     </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(AssemblyName).Configuration</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(AssemblyName).Secrets</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  
+  <ItemGroup Condition="$(NetLegacy) == 'true'">
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\src\Bearz.Core.csproj" />
+    <PackageReference Include="Handlebars.Net" />
+    <PackageReference Include="Humanizer.Core" />
   </ItemGroup>
 
   <ItemGroup Condition="$(NetLegacy) == 'true'">
-    <PackageReference Include="Nullable"  PrivateAssets="all" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <Compile Include="$(InternalDir)/Index.cs" Link="Index.cs" />
     <Compile Include="$(InternalDir)/Range.cs" Link="Range.cs" />
     <Compile Include="$(InternalDir)/Diagnostics/CodeAnalysis/DynamicallyAccessedMembersAttribute.cs" Link="DynamicallyAccessedMembersAttribute.cs" />
     <Compile Include="$(InternalDir)/Diagnostics/CodeAnalysis/DynamicallyAccessedMemberTypes.cs" Link="DynamicallyAccessedMembersTypes.cs" />
-   </ItemGroup>
+    <Compile Include="$(InternalDir)/Runtime/Versioning/PlatformAttributes.cs" Link="PlatformAttributes.cs" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentBuilder">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <ProjectReference Include="..\..\Core\src\Bearz.Core.csproj" />
   </ItemGroup>
 </Project>

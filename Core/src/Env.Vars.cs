@@ -54,7 +54,7 @@ public static partial class Env
         Environment.SetEnvironmentVariable(name, value, target);
     }
 
-    public static bool TryGetVar(string name, [NotNullWhen(true)] out string? value)
+    public static bool TryGet(string name, [NotNullWhen(true)] out string? value)
     {
         value = Environment.GetEnvironmentVariable(name);
         return value != null;
