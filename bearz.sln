@@ -90,6 +90,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Virtual.Path.Abstractions",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bearz.Virtual.Path.Abstractions", "Virtual.Path.Abstractions\src\Bearz.Virtual.Path.Abstractions.csproj", "{9CB352E3-BCE9-4A31-818A-B7426FFE9E82}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Virtual.Environment", "Virtual.Environment", "{4289B1FE-7EA2-4A3E-BB3E-AAB1403656F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bearz.Virtual.Environment", "Virtual.Environment\src\Bearz.Virtual.Environment.csproj", "{7D6CD1EC-F330-4FF2-AEA0-DC1D3240747C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +179,10 @@ Global
 		{9CB352E3-BCE9-4A31-818A-B7426FFE9E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CB352E3-BCE9-4A31-818A-B7426FFE9E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CB352E3-BCE9-4A31-818A-B7426FFE9E82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D6CD1EC-F330-4FF2-AEA0-DC1D3240747C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D6CD1EC-F330-4FF2-AEA0-DC1D3240747C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D6CD1EC-F330-4FF2-AEA0-DC1D3240747C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D6CD1EC-F330-4FF2-AEA0-DC1D3240747C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C57BC8BD-9340-49C1-9A7E-FFF167503E16} = {CE5BD3C4-5F41-4082-AED0-97448C089959}
@@ -196,5 +204,6 @@ Global
 		{2F92EB13-FDAD-4646-A7B1-6E5656DD474E} = {10AC4DFF-CFEC-4093-B48D-698FAF8648B3}
 		{E5B592B9-7A9A-46CE-971F-2AC7956F0D9C} = {6F1759C3-3A94-4092-B749-0D5B61303ED6}
 		{9CB352E3-BCE9-4A31-818A-B7426FFE9E82} = {5EA3706B-6A48-4FA4-8856-B28C58F0A97D}
+		{7D6CD1EC-F330-4FF2-AEA0-DC1D3240747C} = {4289B1FE-7EA2-4A3E-BB3E-AAB1403656F2}
 	EndGlobalSection
 EndGlobal

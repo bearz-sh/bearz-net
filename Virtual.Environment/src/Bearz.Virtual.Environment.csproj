@@ -13,7 +13,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>Environment</PackageTags>
     <Description>
-    Bearz.Virtual.Environment.Abstractions
+    Bearz.Virtual.Environment
     </Description>
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
   </PropertyGroup>
@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\src\Bearz.Core.csproj" />
-    <ProjectReference Include="..\..\Secrets\src\Bearz.Secrets.csproj" />
+    <ProjectReference Include="..\..\Virtual.Environment.Abstractions\src\Bearz.Virtual.Environment.Abstractions.csproj" />
   </ItemGroup>
 </Project>

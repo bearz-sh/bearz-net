@@ -112,6 +112,10 @@ public static partial class Env
 
     public static bool IsPrivilegedProcess => IsElevatedUser.Value;
 
+    public static Architecture ProcessArch => RuntimeInformation.ProcessArchitecture;
+
+    public static Architecture OsArch => RuntimeInformation.OSArchitecture;
+
     [DllImport("libc", EntryPoint = "uname")]
     private static extern int Uname(IntPtr buf);
 }

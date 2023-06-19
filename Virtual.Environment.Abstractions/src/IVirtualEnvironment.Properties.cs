@@ -6,8 +6,6 @@ namespace Bearz.Virtual;
 
 public partial interface IVirtualEnvironment
 {
-    IEnumerable<string> VariableNames { get; }
-
     string Cwd { get; set; }
 
     bool IsWindows { get; }
@@ -16,13 +14,13 @@ public partial interface IVirtualEnvironment
 
     bool IsMacOS { get; }
 
-    bool IsProcess64Bit { get; }
+    bool Is64BitProcess { get; }
 
-    bool IsOs64Bit { get; }
+    bool Is64BitOs { get; }
 
     bool IsUserInteractive { get; set; }
 
-    bool IsProcessElevated { get; }
+    bool IsPrivilegedProcess { get; }
 
     bool IsWsl { get; }
 

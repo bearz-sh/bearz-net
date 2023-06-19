@@ -35,9 +35,6 @@ public partial interface IVirtualEnvironment
     void Remove(string variableName)
         => Env.Remove(variableName);
 
-    void Remove(string variableName, EnvironmentVariableTarget target)
-        => Env.Remove(variableName, target);
-
     string Directory(KnownDirectory directory)
         => Env.Directory(directory);
 
@@ -76,8 +73,6 @@ public partial interface IVirtualEnvironment
     IDictionary<string, string> List();
 
     void Remove(string variableName);
-
-    void Remove(string variableName, EnvironmentVariableTarget target);
 
     string Directory(KnownDirectory directory);
 
