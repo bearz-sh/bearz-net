@@ -1,0 +1,56 @@
+<!--suppress MsbuildTargetFrameworkTagInspection -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <LibFx Condition="$(LibFx) == ''">net7.0</LibFx>
+    <TargetFrameworks>$(LibFx)</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>true</ImplicitUsings>
+    <RootNamespace>Bearz.ClosedXml</RootNamespace>
+    <IsTrimmable>false</IsTrimmable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>closexml excel bearz</PackageTags>
+    <Description>
+    Bearz.ClosedXml
+    </Description>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/CHANGELOG.md"))</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="ClosedXML.Report" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(NetLegacy) == 'true'">
+    <PackageReference Include="Nullable"  PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="$(InternalDir)/Diagnostics/CodeAnalysis/DynamicallyAccessedMembersAttribute.cs" Link="DynamicallyAccessedMembersAttribute.cs" />
+    <Compile Include="$(InternalDir)/Diagnostics/CodeAnalysis/DynamicallyAccessedMemberTypes.cs" Link="DynamicallyAccessedMembersTypes.cs" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\src\Bearz.Core.csproj" />
+  </ItemGroup>
+
+ 
+</Project>
