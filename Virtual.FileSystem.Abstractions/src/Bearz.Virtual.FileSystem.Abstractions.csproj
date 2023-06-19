@@ -1,3 +1,4 @@
+<!--suppress MsbuildTargetFrameworkTagInspection -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
@@ -5,12 +6,12 @@
     <TargetFrameworks>$(LibFx)</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
-    <RootNamespace>Bearz.Virtual.FileSystem.Abstractions</RootNamespace>
+    <RootNamespace>Bearz.Virtual</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags></PackageTags>
+    <PackageTags>FileSystem</PackageTags>
     <Description>
     Bearz.Virtual.FileSystem.Abstractions
     </Description>
@@ -18,12 +19,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).Tests</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\src\Bearz.Core.csproj" />
   </ItemGroup>
 </Project>

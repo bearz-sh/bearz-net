@@ -131,6 +131,14 @@ public static partial class Fs
     public static IEnumerable<string> EnumerateFileSystemEntries(string path)
         => Directory.EnumerateFileSystemEntries(path);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern)
+        => Directory.EnumerateFileSystemEntries(path, searchPattern);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<string> EnumerateFileSystemEntries(string path, string searchPattern, SearchOption searchOption)
+        => Directory.EnumerateFileSystemEntries(path, searchPattern, searchOption);
+
     public static void EnsureDirectory(string path)
     {
         if (!DirectoryExists(path))
@@ -172,23 +180,23 @@ public static partial class Fs
         => File.Move(source, destination);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FileStream OpenFile(string path)
+    public static FileStream OpenReadFileSteam(string path)
         => File.OpenRead(path);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FileStream OpenFile(string path, FileMode mode)
+    public static FileStream OpenFileStream(string path, FileMode mode)
         => File.Open(path, mode);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FileStream OpenFile(string path, FileMode mode, FileAccess access)
+    public static FileStream OpenFileStream(string path, FileMode mode, FileAccess access)
         => File.Open(path, mode, access);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FileStream OpenFile(string path, FileMode mode, FileAccess access, FileShare share)
+    public static FileStream OpenFileStream(string path, FileMode mode, FileAccess access, FileShare share)
         => File.Open(path, mode, access, share);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FileStream OpenFileWriteStream(string path)
+    public static FileStream OpenWriteFileStream(string path)
         => File.OpenWrite(path);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
