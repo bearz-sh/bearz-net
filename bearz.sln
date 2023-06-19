@@ -102,6 +102,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Virtual.FileSystem.Abstract
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bearz.Virtual.FileSystem.Abstractions", "Virtual.FileSystem.Abstractions\src\Bearz.Virtual.FileSystem.Abstractions.csproj", "{CA9B36F5-3C2C-420F-8891-3F0A56D57049}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Virtual.Process.Abstractions", "Virtual.Process.Abstractions", "{5F33ABA6-3C60-475B-ABB7-591165559F77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bearz.Virtual.Process.Abstractions", "Virtual.Process.Abstractions\src\Bearz.Virtual.Process.Abstractions.csproj", "{EDA2D0D7-D3E9-4B21-93D4-4BD5767BA4CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Virtual.Process", "Virtual.Process", "{B55DAD86-9A16-42F6-AF98-E38DC6B69165}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bearz.Virtual.Process", "Virtual.Process\src\Bearz.Virtual.Process.csproj", "{9FBE4080-B6BF-4C4B-A008-893E3449026D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Virtual.FileSystem", "Virtual.FileSystem", "{EF6450D9-95AF-471C-8E83-34F944FCAF2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bearz.Virtual.FileSystem", "Virtual.FileSystem\src\Bearz.Virtual.FileSystem.csproj", "{9F8F6A6E-72F7-4D7A-9234-C6B631D46655}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -199,6 +211,18 @@ Global
 		{CA9B36F5-3C2C-420F-8891-3F0A56D57049}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA9B36F5-3C2C-420F-8891-3F0A56D57049}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA9B36F5-3C2C-420F-8891-3F0A56D57049}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA2D0D7-D3E9-4B21-93D4-4BD5767BA4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA2D0D7-D3E9-4B21-93D4-4BD5767BA4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA2D0D7-D3E9-4B21-93D4-4BD5767BA4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDA2D0D7-D3E9-4B21-93D4-4BD5767BA4CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FBE4080-B6BF-4C4B-A008-893E3449026D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FBE4080-B6BF-4C4B-A008-893E3449026D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FBE4080-B6BF-4C4B-A008-893E3449026D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FBE4080-B6BF-4C4B-A008-893E3449026D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F8F6A6E-72F7-4D7A-9234-C6B631D46655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F8F6A6E-72F7-4D7A-9234-C6B631D46655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F8F6A6E-72F7-4D7A-9234-C6B631D46655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F8F6A6E-72F7-4D7A-9234-C6B631D46655}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C57BC8BD-9340-49C1-9A7E-FFF167503E16} = {CE5BD3C4-5F41-4082-AED0-97448C089959}
@@ -223,5 +247,8 @@ Global
 		{7D6CD1EC-F330-4FF2-AEA0-DC1D3240747C} = {4289B1FE-7EA2-4A3E-BB3E-AAB1403656F2}
 		{BC71FF26-9118-4A72-AC77-6C3E9C129281} = {8A314F5F-23F7-477C-84F0-5D717C4B479C}
 		{CA9B36F5-3C2C-420F-8891-3F0A56D57049} = {5ACE19FB-C8EA-4A82-A1BB-5162EC5D7158}
+		{EDA2D0D7-D3E9-4B21-93D4-4BD5767BA4CF} = {5F33ABA6-3C60-475B-ABB7-591165559F77}
+		{9FBE4080-B6BF-4C4B-A008-893E3449026D} = {B55DAD86-9A16-42F6-AF98-E38DC6B69165}
+		{9F8F6A6E-72F7-4D7A-9234-C6B631D46655} = {EF6450D9-95AF-471C-8E83-34F944FCAF2F}
 	EndGlobalSection
 EndGlobal

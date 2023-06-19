@@ -147,7 +147,7 @@ public partial interface IVirtualFileSystem
     {
         try
         {
-            return File.GetAttributes(path).HasFlag(FileAttribute.Directory);
+            return File.GetAttributes(path).HasFlag(FileAttributes.Directory);
         }
         catch
         {
@@ -156,7 +156,16 @@ public partial interface IVirtualFileSystem
     }
 
     bool IsFile(string path)
-        => File.Exists(path);
+    {
+        try
+        {
+            return !File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     void LinkDirectory(string path, string pathToTarget)
         => Directory.CreateSymbolicLink(path, pathToTarget);
