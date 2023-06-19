@@ -41,6 +41,8 @@ public partial interface IVirtualPath
 
     string GetFullPath(string path);
 
+    string GetPathRoot(string path);
+
     string GetRandomFileName();
 
     string GetTempPath();

@@ -78,6 +78,12 @@ public partial interface IVirtualPath
     string GetFullPath(string path, string basePath)
         => Path.GetFullPath(path, basePath);
 
+    string? GetPathRoot(string? path)
+        => Path.GetPathRoot(path);
+
+    ReadOnlySpan<char> GetPathRoot(ReadOnlySpan<char> path)
+        => Path.GetPathRoot(path);
+
     string GetRandomFileName()
         => Path.GetRandomFileName();
 
